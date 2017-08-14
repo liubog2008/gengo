@@ -23,10 +23,10 @@ import (
 	"strings"
 
 	"k8s.io/gengo/args"
+	clientgentypes "k8s.io/gengo/examples/client-gen/types"
 	"k8s.io/gengo/generator"
 	"k8s.io/gengo/namer"
 	"k8s.io/gengo/types"
-	clientgentypes "k8s.io/kubernetes/cmd/libs/go2idl/client-gen/types"
 
 	"github.com/golang/glog"
 )

@@ -22,10 +22,10 @@ import (
 	"strings"
 
 	"k8s.io/gengo/args"
+	clientgentypes "k8s.io/gengo/examples/client-gen/types"
 	"k8s.io/gengo/generator"
 	"k8s.io/gengo/namer"
 	"k8s.io/gengo/types"
-	clientgentypes "k8s.io/kubernetes/cmd/libs/go2idl/client-gen/types"
 
 	"github.com/golang/glog"
 )
@@ -205,7 +205,8 @@ func Packages(context *generator.Context, arguments *args.GeneratorArgs) generat
 		packageList = append(packageList, groupPackage(externalVersionPackagePath, groupVersionsEntry, boilerplate))
 	}
 
-	packageList = append(packageList, factoryInterfacePackage(internalVersionPackagePath, boilerplate, customArgs.InternalClientSetPackage, typesForGroupVersion))
+	// NOTE(liubog2008): use client-go internal SharedInformerFactory interface
+	// packageList = append(packageList, factoryInterfacePackage(internalVersionPackagePath, boilerplate, customArgs.InternalClientSetPackage, typesForGroupVersion))
 	packageList = append(packageList, factoryPackage(internalVersionPackagePath, boilerplate, internalGroupVersions, customArgs.InternalClientSetPackage, typesForGroupVersion))
 	for _, groupVersionsEntry := range internalGroupVersions {
 		packageList = append(packageList, groupPackage(internalVersionPackagePath, groupVersionsEntry, boilerplate))

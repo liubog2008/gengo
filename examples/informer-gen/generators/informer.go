@@ -21,10 +21,10 @@ import (
 	"io"
 	"strings"
 
+	clientgentypes "k8s.io/gengo/examples/client-gen/types"
 	"k8s.io/gengo/generator"
 	"k8s.io/gengo/namer"
 	"k8s.io/gengo/types"
-	clientgentypes "k8s.io/kubernetes/cmd/libs/go2idl/client-gen/types"
 
 	"github.com/golang/glog"
 )
@@ -70,29 +70,30 @@ func (g *informerGenerator) GenerateType(c *generator.Context, t *types.Type, w 
 	informerFor := "InformerFor"
 
 	m := map[string]interface{}{
-		"apiScheme":                       c.Universe.Type(apiScheme),
-		"cacheIndexers":                   c.Universe.Type(cacheIndexers),
-		"cacheListWatch":                  c.Universe.Type(cacheListWatch),
-		"cacheMetaNamespaceIndexFunc":     c.Universe.Function(cacheMetaNamespaceIndexFunc),
-		"cacheNamespaceIndex":             c.Universe.Variable(cacheNamespaceIndex),
-		"cacheNewSharedIndexInformer":     c.Universe.Function(cacheNewSharedIndexInformer),
-		"cacheSharedIndexInformer":        c.Universe.Type(cacheSharedIndexInformer),
-		"clientSetInterface":              clientSetInterface,
-		"group":                           namer.IC(g.groupVersion.Group.NonEmpty()),
-		"informerFor":                     informerFor,
-		"interfacesSharedInformerFactory": c.Universe.Type(types.Name{Package: g.internalInterfacesPackage, Name: "SharedInformerFactory"}),
-		"listOptions":                     c.Universe.Type(listOptions),
-		"lister":                          c.Universe.Type(types.Name{Package: listerPackage, Name: t.Name.Name + "Lister"}),
-		"namespaceAll":                    c.Universe.Type(metav1NamespaceAll),
-		"namespaced":                      !extractBoolTagOrDie("nonNamespaced", t.SecondClosestCommentLines),
-		"newLister":                       c.Universe.Function(types.Name{Package: listerPackage, Name: "New" + t.Name.Name + "Lister"}),
-		"runtimeObject":                   c.Universe.Type(runtimeObject),
-		"timeDuration":                    c.Universe.Type(timeDuration),
-		"type":                            t,
-		"v1ListOptions":                   c.Universe.Type(v1ListOptions),
-		"version":                         namer.IC(g.groupVersion.Version.String()),
-		"watchInterface":                  c.Universe.Type(watchInterface),
-		"clientgoInterface":               c.Universe.Type(clientgoInterface),
+		"apiScheme":                             c.Universe.Type(apiScheme),
+		"cacheIndexers":                         c.Universe.Type(cacheIndexers),
+		"cacheListWatch":                        c.Universe.Type(cacheListWatch),
+		"cacheMetaNamespaceIndexFunc":           c.Universe.Function(cacheMetaNamespaceIndexFunc),
+		"cacheNamespaceIndex":                   c.Universe.Variable(cacheNamespaceIndex),
+		"cacheNewSharedIndexInformer":           c.Universe.Function(cacheNewSharedIndexInformer),
+		"cacheSharedIndexInformer":              c.Universe.Type(cacheSharedIndexInformer),
+		"clientSetInterface":                    clientSetInterface,
+		"group":                                 namer.IC(g.groupVersion.Group.NonEmpty()),
+		"informerFor":                           informerFor,
+		"interfacesSharedInformerFactory":       c.Universe.Type(types.Name{Package: g.internalInterfacesPackage, Name: "SharedInformerFactory"}),
+		"listOptions":                           c.Universe.Type(listOptions),
+		"lister":                                c.Universe.Type(types.Name{Package: listerPackage, Name: t.Name.Name + "Lister"}),
+		"namespaceAll":                          c.Universe.Type(metav1NamespaceAll),
+		"namespaced":                            !extractBoolTagOrDie("nonNamespaced", t.SecondClosestCommentLines),
+		"newLister":                             c.Universe.Function(types.Name{Package: listerPackage, Name: "New" + t.Name.Name + "Lister"}),
+		"runtimeObject":                         c.Universe.Type(runtimeObject),
+		"timeDuration":                          c.Universe.Type(timeDuration),
+		"type":                                  t,
+		"v1ListOptions":                         c.Universe.Type(v1ListOptions),
+		"version":                               namer.IC(g.groupVersion.Version.String()),
+		"watchInterface":                        c.Universe.Type(watchInterface),
+		"clientgoInterface":                     c.Universe.Type(clientgoInterface),
+		"clientgoInternalSharedInformerFactory": c.Universe.Type(clientgoInternalSharedInformerFactory),
 	}
 
 	sw.Do(typeInformerInterface, m)
@@ -119,7 +120,7 @@ type $.type|public$Informer interface {
 
 var typeInformerStruct = `
 type $.type|private$Informer struct {
-	factory $.interfacesSharedInformerFactory|raw$
+	factory $.clientgoInternalSharedInformerFactory|raw$
 }
 `
 
@@ -165,10 +166,10 @@ func new$.type|public$Informer(client $.clientSetInterface|raw$, resyncPeriod $.
 
 var typeInformerInformer = `
 func (f *$.type|private$Informer) Informer() $.cacheSharedIndexInformer|raw$ {
-	return f.factory.$.informerFor$(&$.type|raw${}, func (client $.clientgoInterface$, resyncPeriod $.timeDuration|raw$) $.cacheSharedIndexInformer|raw${
+	return f.factory.$.informerFor$(&$.type|raw${}, func (client $.clientgoInterface|raw$, resyncPeriod $.timeDuration|raw$) $.cacheSharedIndexInformer|raw${
 		// panic if client is not *kubernetes.Clientset
-		return new$.type|public$Informer(client.($.clientgoInterface$), resyncPeriod)
-	}
+		return new$.type|public$Informer(client.($.clientSetInterface|raw$), resyncPeriod)
+	})
 }
 `
 

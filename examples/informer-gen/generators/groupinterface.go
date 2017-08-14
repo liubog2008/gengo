@@ -21,10 +21,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	clientgentypes "k8s.io/gengo/examples/client-gen/types"
 	"k8s.io/gengo/generator"
 	"k8s.io/gengo/namer"
 	"k8s.io/gengo/types"
-	clientgentypes "k8s.io/kubernetes/cmd/libs/go2idl/client-gen/types"
 )
 
 // groupInterfaceGenerator generates the per-group interface file.
@@ -79,8 +79,8 @@ func (g *groupInterfaceGenerator) GenerateType(c *generator.Context, t *types.Ty
 		})
 	}
 	m := map[string]interface{}{
-		"interfacesSharedInformerFactory": c.Universe.Type(types.Name{Package: g.internalInterfacesPackage, Name: "SharedInformerFactory"}),
-		"versions":                        versions,
+		"versions":                              versions,
+		"clientgoInternalSharedInformerFactory": c.Universe.Type(clientgoInternalSharedInformerFactory),
 	}
 
 	sw.Do(groupTemplate, m)
@@ -98,11 +98,11 @@ type Interface interface {
 }
 
 type group struct {
-	$.interfacesSharedInformerFactory|raw$
+	$.clientgoInternalSharedInformerFactory|raw$
 }
 
 // New returns a new Interface.
-func New(f $.interfacesSharedInformerFactory|raw$) Interface {
+func New(f $.clientgoInternalSharedInformerFactory|raw$) Interface {
 	return &group{f}
 }
 

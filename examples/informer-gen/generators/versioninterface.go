@@ -59,8 +59,8 @@ func (g *versionInterfaceGenerator) GenerateType(c *generator.Context, t *types.
 	sw := generator.NewSnippetWriter(w, c, "$", "$")
 
 	m := map[string]interface{}{
-		"interfacesSharedInformerFactory": c.Universe.Type(types.Name{Package: g.internalInterfacesPackage, Name: "SharedInformerFactory"}),
 		"types": g.types,
+		"clientgoInternalSharedInformerFactory": c.Universe.Type(clientgoInternalSharedInformerFactory),
 	}
 
 	sw.Do(versionTemplate, m)
@@ -78,11 +78,11 @@ type Interface interface {
 }
 
 type version struct {
-	$.interfacesSharedInformerFactory|raw$
+	$.clientgoInternalSharedInformerFactory|raw$
 }
 
 // New returns a new Interface.
-func New(f $.interfacesSharedInformerFactory|raw$) Interface {
+func New(f $.clientgoInternalSharedInformerFactory|raw$) Interface {
 	return &version{f}
 }
 

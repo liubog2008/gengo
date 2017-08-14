@@ -21,10 +21,10 @@ import (
 	"sort"
 	"strings"
 
+	clientgentypes "k8s.io/gengo/examples/client-gen/types"
 	"k8s.io/gengo/generator"
 	"k8s.io/gengo/namer"
 	"k8s.io/gengo/types"
-	clientgentypes "k8s.io/kubernetes/cmd/libs/go2idl/client-gen/types"
 )
 
 // genericGenerator generates the generic informer.
@@ -60,7 +60,7 @@ func (g *genericGenerator) Namers(c *generator.Context) namer.NameSystems {
 
 func (g *genericGenerator) Imports(c *generator.Context) (imports []string) {
 	imports = append(imports, g.imports.ImportLines()...)
-	imports = append(imports, "fmt")
+	// imports = append(imports, "fmt")
 	return
 }
 
